@@ -54,6 +54,44 @@ public class Board {
 
     }
 
+    /** General shifting method
+     * @param dx direction of shift in the x-direction, can be -1, 0, or 1
+     * @param dy direction of shift in the y-direction, can be -1, 0, or 1
+     */
+    public void shift(int dx, int dy) {
+        a: for (int r = 0; r < 4; ++r) {
+            b: for (int c = 3; c >= 0; --c) {
+                if (board[r][c] == 0) continue;
+                else {
+                    int num = board[r][c];
+                    int index = c + 1;
+                    while (board[r][index] != 0 && index < 4) {
+                        // "bubble" the current point towards the right until
+                        // we reach a non-zero point, then deal with the next
+                        // step
+                        ++index;
+                    }
+                    // we have either reached index==4 or a board[r][index]
+                    // is a non-zero point.
+                    if (index >= 4) {
+                        // move the current point to the last one
+                        change(r, 3, num);
+                        change(r, c, 0);
+                    } else {
+                        // check for collisions
+                        if (board[r][index] == num) {
+                            change(r, index, 2 * num);
+                            change (r, c, 0);
+                        } else {
+                            change(r, index-1, num);
+                            change(r, c, 0);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /** Shifts right */
     public void toRight() {
         a: for (int r = 0; r < 4; ++r) {
