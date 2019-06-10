@@ -62,19 +62,27 @@ public class Board {
                 else {
                     int num = board[r][c];
                     int index = c + 1;
-                    while (index < 4) {
-                        if (board[r][index] != 0) {
-                            // combine
-                            if (board[r][index] == num) {
-                                change(r, index, 2 * num);
-                                change(r, index - 1, 0);
-                            } else continue b;
-                        } else {
-                            // move it over
-                            change(r, index, num);
-                            change(r, index - 1, 0);
-                        }
+                    while (board[r][index] != 0 && index < 4) {
+                        // "bubble" the current point towards the right until
+                        // we reach a non-zero point, then deal with the next
+                        // step
                         ++index;
+                    }
+                    // we have either reached index==4 or a board[r][index]
+                    // is a non-zero point.
+                    if (index >= 4) {
+                        // move the current point to the last one
+                        change(r, 3, num);
+                        change(r, c, 0);
+                    } else {
+                        // check for collisions
+                        if (board[r][index] == num) {
+                            change(r, index, 2 * num);
+                            change (r, c, 0);
+                        } else {
+                            change(r, index-1, num);
+                            change(r, c, 0);
+                        }
                     }
                 }
             }
